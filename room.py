@@ -1,11 +1,12 @@
 class Room:
     """A class representing a generic room"""
 
-    def __init__(self, room_name):
+    def __init__(self, room_name, item):
         self.room_name = room_name
         self.is_occupied = False
         self.item = ''
         self.portals = []
+        self.minigame = []
 
     @property
     def room(self):

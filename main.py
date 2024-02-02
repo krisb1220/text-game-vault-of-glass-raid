@@ -2,77 +2,114 @@ import bcolors
 from room import Room
 from player import Player
 from game import Game
-from bcolors import colors
 from _utils import printc
+import storylines
 
-room_instance = Room("Living Room")
+print(storylines)
+
+my_room = Room("Start", "NONE")
+rooms = [my_room]
 player = Player("Kris")
-game = Game(Player)
+game = Game(player, rooms)
+state = game.get_state()
 
-class _globals:
+player_inputs = [
 
-    def __init__(self):
-        self.command_current = "start"
-        self.command_count = 0
-        self.commands = ['start']
-        self.valid_commands = [
-            "test",
-            "colors",
-            "end",
-            "start",
-            "ERROR"
-    ]
+]
 
 
-my_game = _globals()
+def reject_command():
+    game.commands.pop(0)
+    game.command_current = "ERROR"
+    game.commands.insert(0, game.command_current)
+    printc("oops, may want to try that again", "f")
 
-print(my_game.command_count)
+def next(step):
+    step1=state["current_step"]
+    print("step begin", step1)
+    game.set_state(["current_step", step+1])
+    game.set_state(["move_on", True])
+    print("step end", step1)
+    print("step after", step1)
 
-game.start()
 
 
-def reject_command(cmd):
-    my_game.commands.pop(0)
-    my_game.command_current = "ERROR"
-    my_game.commands.insert(0, my_game.command_current)
-    printc("command not recognized", "a")
-    print(my_game.commands)
+def process_inputs(i, in_type):
+    print("input user")
+    if in_type == "lines":
+        print(storylines.lines[i])
 
-def send_command(cb):
-    print("command sent")
+    # if type == "choices":
+    #     for choice in storylines.lines[0]:
+    #         i = i + inc
+    #         print(choice)
 
-    if cmd[0] == "test":
+def start(step):
+    game.start()
+    process_inputs(0, "lines")
+    player.name = input("What is your name?")
+
+def updateRoom(newRoom):
+    game.set_state(["current_room", newRoom])
+
+def run_command(runner, *args):
+
+    """
+    A function that dispatches correct commands to their respective functions
+    and outcomes. cb is a callback functions that will be
+    """
+
+    game.commands.insert(0, runner) # log the command into the command array
+
+    if args: # process any additional args
+        print("command received", args[0])
+
+    if runner == "test":
         printc("everything is good", "g")
-        print(my_game.commands)
+        print(game.commands)
 
-        # send_command(cmd_inc(1))
-
-    elif cmd[0] == "end":
+    elif runner == "end":
         game.end(False)
 
-    elif cmd[0] == "colors":
+    elif runner == "colors":
         printc("x", "a")
 
-    elif cmd[0] == "Begin":
+# internal commands
+
+    elif runner == "start":
+        start(0)
+
+
+    elif runner == "_change_room":
         printc("x", "a")
 
     else:
-        reject_command(cmd)
-        printc("command not recognized", "f")
-        # cmd.insert(0, input("Enter a command:"))
+        reject_command()
 
-    return cb
 
-while game.state["isRunning"]:
-    cmd = my_game.commands #commands array
-    # my_game.command_current = input("Enter a command:")
 
-    if cmd[0] in my_game.valid_commands:
-        cmd.insert(0, my_game.command_current)
-        send_command("test")
+while game.state["is_running"]:
+    game.command_current = input("Enter a command:")
+    cmds = game.commands
 
-    if cmd[0] not in my_game.valid_commands:
-        reject_command(cmd)
+    print(game.state["move_on"])
+
+    if state["win_condition"]:
+        game.end(True)
+
+    if not state["is_running"]:
+        run_command("start")
+
+    if cmds[0] in game.valid_commands:
+        run_command(game.command_current)
+
+    if state["move_on"] and state["current_step"] != len(storylines.lines):
+        print("lines", len(storylines.lines))
+        process_inputs(state["current_step"], "lines")
+        state["move_on"] = False
+        next(state["current_step"])
+
+
 
 
 

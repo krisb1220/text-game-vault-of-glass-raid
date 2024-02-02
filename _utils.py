@@ -3,6 +3,7 @@ from room import Room
 from player import Player
 from game import Game
 from bcolors import colors
+
 def printc(msg, color_in):
     """Pretty printing with colors"""
 
@@ -12,6 +13,3 @@ def printc(msg, color_in):
     if msg == "x":
         for ex_color in colors:
             print(f"{colors[ex_color]}", "EXAMPLE", "| ", ex_color, colors["g"])
-
-
-#BEGIN FILE
