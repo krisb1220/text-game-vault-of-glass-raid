@@ -4,7 +4,11 @@ from player import Player
 from game import Game
 from _utils import printc
 import storylines
+<<<<<<< HEAD
 #Git test
+=======
+
+>>>>>>> e32b5a845cbe0deea84f4cc0a9f1380c77c55c2e
 print(storylines)
 
 my_room = Room("Start", "NONE")
