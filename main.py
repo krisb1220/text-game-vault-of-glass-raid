@@ -4,12 +4,10 @@ from player import Player
 from game import Game
 from _utils import printc
 import storylines
-<<<<<<< HEAD
-#Git test
-=======
 
->>>>>>> e32b5a845cbe0deea84f4cc0a9f1380c77c55c2e
-print(storylines)
+#New Code
+
+my_room = ''
 
 my_room = Room("Start", "NONE")
 rooms = [my_room]
@@ -56,33 +54,22 @@ def start(step):
 def updateRoom(newRoom):
     game.set_state(["current_room", newRoom])
 
-def run_command(runner, *args):
+def run_command(runner):
 
     """
     A function that dispatches correct commands to their respective functions
-    and outcomes. cb is a callback functions that will be
+    and outcomes.
     """
 
     game.commands.insert(0, runner) # log the command into the command array
 
-    if args: # process any additional args
-        print("command received", args[0])
-
-    if runner == "test":
-        printc("everything is good", "g")
-        print(game.commands)
-
-    elif runner == "end":
+    if runner == "end":
         game.end(False)
-
-    elif runner == "colors":
-        printc("x", "a")
 
 # internal commands
 
     elif runner == "start":
         start(0)
-
 
     elif runner == "_change_room":
         printc("x", "a")
@@ -98,20 +85,23 @@ while game.state["is_running"]:
 
     print(game.state["move_on"])
 
+
+
     if state["win_condition"]:
         game.end(True)
 
     if not state["is_running"]:
         run_command("start")
 
-    if cmds[0] in game.valid_commands:
-        run_command(game.command_current)
-
     if state["move_on"] and state["current_step"] != len(storylines.lines):
         print("lines", len(storylines.lines))
         process_inputs(state["current_step"], "lines")
         state["move_on"] = False
         next(state["current_step"])
+
+
+    if cmds[0] in game.valid_commands:
+        run_command(game.command_current)
 
 
 
